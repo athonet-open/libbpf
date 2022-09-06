@@ -675,7 +675,6 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 	prog_fd      = OPTS_GET(opts, prog_fd, 0);
 	prog_id      = OPTS_GET(opts, prog_id, 0);
 	flags        = OPTS_GET(opts, flags, 0);
-	classid      = OPTS_GET(opts, classid, 0);
 
 	if (ifindex <= 0 || !prog_fd || prog_id)
 		return libbpf_err(-EINVAL);
@@ -708,9 +707,13 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 	nla = nlattr_begin_nested(&req, TCA_OPTIONS);
 	if (!nla)
 		return libbpf_err(-EMSGSIZE);
-	ret = nlattr_add(&req, TCA_BPF_CLASSID, &classid, sizeof(classid));
-	if (ret < 0)
-		return libbpf_err(ret);
+
+	if (OPTS_GET(opts, classid, TC_H_UNSPEC)) {
+		ret = nlattr_add(&req.nh, TCA_BPF_CLASSID, &opts->classid, sizeof(opts->classid));
+		if (ret < 0)
+			return libbpf_err(ret);
+	}
+
 	ret = tc_add_fd_and_name(&req, prog_fd);
 	if (ret < 0)
 		return libbpf_err(ret);

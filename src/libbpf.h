@@ -1226,10 +1226,10 @@ struct bpf_tc_opts {
 	__u32 prog_id;
 	__u32 handle;
 	__u32 priority;
-        __u32 classid;
+	__u32 classid;
 	size_t :0;
 };
-#define bpf_tc_opts__last_field priority
+#define bpf_tc_opts__last_field classid
 
 LIBBPF_API int bpf_tc_hook_create(struct bpf_tc_hook *hook);
 LIBBPF_API int bpf_tc_hook_destroy(struct bpf_tc_hook *hook);

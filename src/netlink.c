@@ -709,7 +709,7 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 		return libbpf_err(-EMSGSIZE);
 
 	if (OPTS_GET(opts, classid, TC_H_UNSPEC)) {
-		ret = nlattr_add(&req.nh, TCA_BPF_CLASSID, &opts->classid, sizeof(opts->classid));
+		ret = nlattr_add(&req, TCA_BPF_CLASSID, &opts->classid, sizeof(opts->classid));
 		if (ret < 0)
 			return libbpf_err(ret);
 	}

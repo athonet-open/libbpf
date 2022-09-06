@@ -655,7 +655,7 @@ static int tc_add_fd_and_name(struct libbpf_nla_req *req, int fd)
 
 int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 {
-	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags, classid;
+	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags;
 	int ret, ifindex, attach_point, prog_fd;
 	struct bpf_cb_ctx info = {};
 	struct libbpf_nla_req req;

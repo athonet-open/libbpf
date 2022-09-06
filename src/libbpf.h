@@ -1226,6 +1226,7 @@ struct bpf_tc_opts {
 	__u32 prog_id;
 	__u32 handle;
 	__u32 priority;
+        __u32 classid;
 	size_t :0;
 };
 #define bpf_tc_opts__last_field priority

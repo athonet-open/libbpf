@@ -708,14 +708,14 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 	nla = nlattr_begin_nested(&req, TCA_OPTIONS);
 	if (!nla)
 		return libbpf_err(-EMSGSIZE);
+	ret = nlattr_add(&req, TCA_BPF_CLASSID, &classid, sizeof(classid));
+	if (ret < 0)
+		return libbpf_err(ret);
 	ret = tc_add_fd_and_name(&req, prog_fd);
 	if (ret < 0)
 		return libbpf_err(ret);
 	bpf_flags = TCA_BPF_FLAG_ACT_DIRECT;
 	ret = nlattr_add(&req, TCA_BPF_FLAGS, &bpf_flags, sizeof(bpf_flags));
-	if (ret < 0)
-		return libbpf_err(ret);
-	ret = nlattr_add(&req, TCA_BPF_CLASSID, &classid, sizeof(classid));
 	if (ret < 0)
 		return libbpf_err(ret);
 	nlattr_end_nested(&req, nla);

@@ -610,7 +610,7 @@ static int tc_add_fd_and_name(struct libbpf_nla_req *req, int fd)
 
 int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 {
-	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags;
+	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags, classid;
 	int ret, ifindex, attach_point, prog_fd;
 	struct bpf_cb_ctx info = {};
 	struct libbpf_nla_req req;
@@ -630,6 +630,7 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 	prog_fd      = OPTS_GET(opts, prog_fd, 0);
 	prog_id      = OPTS_GET(opts, prog_id, 0);
 	flags        = OPTS_GET(opts, flags, 0);
+	classid      = OPTS_GET(opts, classid, 0);
 
 	if (ifindex <= 0 || !prog_fd || prog_id)
 		return libbpf_err(-EINVAL);
@@ -667,6 +668,9 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
 		return libbpf_err(ret);
 	bpf_flags = TCA_BPF_FLAG_ACT_DIRECT;
 	ret = nlattr_add(&req, TCA_BPF_FLAGS, &bpf_flags, sizeof(bpf_flags));
+	if (ret < 0)
+		return libbpf_err(ret);
+	ret = nlattr_add(&req, TCA_BPF_CLASSID, &classid, sizeof(classid));
 	if (ret < 0)
 		return libbpf_err(ret);
 	nlattr_end_nested(&req, nla);
